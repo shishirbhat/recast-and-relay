@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Relay walkthrough</title>
+<meta name="description" content="Step through Relay's integration experiment: two changes that each pass their own tests break the project together. Without Relay the break ships; with Relay it is blocked and explained.">
+<link rel="icon" href="../assets/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400&display=swap">
+<link rel="stylesheet" href="../assets/site.css">
+<style>
+  .modes { display: inline-flex; background: var(--sunk); border: 1px solid var(--line); border-radius: 999px; padding: 4px; gap: 4px; }
+  .modes button { font: 600 14px var(--sans); border: 0; background: none; color: var(--muted); padding: 8px 16px; border-radius: 999px; cursor: pointer; }
+  .modes button[aria-pressed="true"] { background: var(--surface); color: var(--ink); box-shadow: 0 1px 3px rgb(0 0 0 / .12); }
+  .modes button[data-mode="with"][aria-pressed="true"] { color: var(--relay); }
+  .stage { display: grid; gap: 24px; grid-template-columns: 1fr; margin-top: 24px; }
+  @media (min-width: 900px) { .stage { grid-template-columns: 5fr 6fr; } }
+  .story { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 24px; display: flex; flex-direction: column; min-height: 360px; }
+  .count { font-size: 13px; color: var(--muted); margin-bottom: 8px; }
+  .story h2 { font-size: clamp(26px, 3.4vw, 34px); }
+  .story .body { flex: 1; }
+  .story ul { padding-left: 20px; }
+  .nav-steps { display: flex; align-items: center; gap: 10px; margin-top: 16px; }
+  .nav-steps button { font: 600 14px var(--sans); border: 1px solid var(--line); background: var(--surface); color: var(--ink); padding: 9px 16px; border-radius: 999px; cursor: pointer; }
+  .nav-steps button.next { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+  .nav-steps button:disabled { opacity: .4; cursor: default; }
+  .dots { display: flex; gap: 6px; margin-left: auto; }
+  .dots span { width: 8px; height: 8px; border-radius: 50%; background: var(--line); }
+  .dots span.on { background: var(--relay); }
+  .panel { background: #15141a; color: #e9e7f1; border-radius: 18px; padding: 18px; font: 13px/1.6 var(--mono); overflow: hidden; min-height: 360px; display: flex; flex-direction: column; gap: 12px; }
+  .file { background: #1e1d25; border-radius: 12px; padding: 12px 14px; }
+  .file .name { color: #9d9ab0; font-size: 12px; margin-bottom: 6px; display: flex; justify-content: space-between; gap: 8px; }
+  .file pre { background: none; border: 0; padding: 0; margin: 0; color: inherit; white-space: pre-wrap; word-break: break-word; }
+  .k { color: #c4b5fd; } .s { color: #86efac; } .c { color: #7d7a8c; } .hl { background: rgb(250 204 21 / .16); border-radius: 3px; }
+  .del { color: #fca5a5; text-decoration: line-through; } .add { color: #86efac; }
+  .term { background: #0e0d12; border-radius: 12px; padding: 12px 14px; white-space: pre-wrap; word-break: break-word; }
+  .pass { color: #4ade80; } .fail { color: #f87171; } .warn { color: #fbbf24; } .dim { color: #7d7a8c; }
+  .badge { font: 600 11px var(--sans); padding: 2px 8px; border-radius: 999px; background: #2a2933; color: #c9c6d8; }
+  .badge.pass { background: rgb(74 222 128 / .15); } .badge.fail { background: rgb(248 113 113 / .15); } .badge.relay { background: rgb(165 180 252 / .18); color: #c7d2fe; }
+  .ev { list-style: none; padding: 0; margin: 0; display: grid; gap: 6px; }
+  .ev li::before { content: "✓ "; color: #4ade80; }
+  @media (prefers-reduced-motion: no-preference) { .panel > * { animation: rise .28s ease-out both; } @keyframes rise { from { opacity: 0; transform: translateY(6px); } } }
+</style>
+</head>
+<body>
+<header class="bar"><div class="wrap">
+  <a class="brand" href="../"><span class="dot" aria-hidden="true"></span>Recast &amp; Relay</a>
+  <nav class="nav" aria-label="Main">
+    <a href="../recast/">Recast</a><a href="../recast/demo/">Try Recast</a><a href="./">Relay</a><a href="walkthrough.html" aria-current="page">Relay walkthrough</a><a href="https://github.com/shishirbhat/recast-and-relay/blob/main/docs/how-it-works.md">How it works</a><a href="https://github.com/shishirbhat/recast-and-relay/blob/main/docs/api.md">API</a>
+  </nav>
+</div></header>
+
+<main>
+<section class="hero" style="padding-bottom:24px"><div class="wrap">
+  <span class="eyebrow relay">Relay walkthrough</span>
+  <h1>Green, green, <em>broken</em>.</h1>
+  <p class="lede">Two coding agents each finish a task, and each passes its own tests. Step through what happens next, first without Relay and then with it. This replays Relay's recorded experiment, shortened: the project, the checks, the results and Relay's explanation are taken from it. The last step shows how it ends once the owners fix it.</p>
+</div></section>
+
+<section style="padding-top:8px"><div class="wrap">
+  <div class="modes" role="group" aria-label="Workflow">
+    <button type="button" data-mode="without" aria-pressed="true">Without Relay</button>
+    <button type="button" data-mode="with" aria-pressed="false">With Relay</button>
+  </div>
+  <div class="stage">
+    <div class="story" aria-live="polite">
+      <div class="count" id="count"></div>
+      <div class="body" id="story"></div>
+      <div class="nav-steps">
+        <button type="button" id="prev">Back</button><button type="button" class="next" id="next">Next</button>
+        <div class="dots" id="dots" aria-hidden="true"></div>
+      </div>
+    </div>
+    <div class="panel" id="panel" aria-label="What the project looks like at this step"></div>
+  </div>
+  <p style="color:var(--muted);font-size:14px;margin-top:14px">Use the arrow keys to step through. Switch workflows at any time.</p>
+</div></section>
+
+<section><div class="wrap">
+  <h2>The recorded results</h2>
+  <p class="lede">The same scenario with real agents (Claude Code, headless): two rounds of three trials, each trial run in both workflows from the same starting project.</p>
+  <div class="table"><table>
+    <thead><tr><th></th><th>Without Relay</th><th>With Relay</th></tr></thead>
+    <tbody>
+      <tr><td>Both agents' own checks passed</td><td>6 of 6</td><td>6 of 6</td></tr>
+      <tr><td>Git merge conflict</td><td>none</td><td>none</td></tr>
+      <tr><td>Break reached the shared project</td><td class="no">6 of 6</td><td class="yes">0 of 6</td></tr>
+      <tr><td>When the break was found</td><td>after merge</td><td>before anything was applied</td></tr>
+      <tr><td>Cause explained</td><td>a failing test, after the fact</td><td>"confirmed", accurate in 3 of 3 (round 2; judged by running the code)</td></tr>
+      <tr><td>Model cost per trial</td><td>about $0.17 to $0.19</td><td>about $0.24</td></tr>
+    </tbody>
+  </table></div>
+  <p class="note relay" style="margin-top:20px"><b>Limits.</b> The tasks were designed to set up this conflict, in a five-file project, with one agent product. The trials show Relay catches and explains this break when it happens, not how often it happens in real projects. In one round, an agent noticed the problem and mentioned it in chat; that warning gated nothing.</p>
+  <div class="actions"><a class="btn relay" href="./">Back to Relay</a><a class="btn" href="https://github.com/shishirbhat/recast-and-relay/blob/main/docs/how-it-works.md#relay">How it works</a></div>
+</div></section>
+</main>
+
+<footer><div class="wrap"><span>© 2026 Shishir Bhat. All rights reserved.</span><span><a href="https://github.com/shishirbhat/recast-and-relay">Repository</a> · <a href="https://github.com/shishirbhat">@shishirbhat</a></span></div></footer>
+
+<script>
+(() => {
+  const server0 = `<span class="k">export function</span> getUser(id) {\n  <span class="k">return</span> { id, <span class="hl">name</span>: <span class="s">'Ada'</span> };\n}`;
+  const server1 = `<span class="k">export function</span> getUser(id) {\n  <span class="k">return</span> { id, <span class="del">name</span><span class="add">fullName</span>: <span class="s">'Ada'</span> };\n}`;
+  const ui0 = `<span class="k">import</span> { getUser } <span class="k">from</span> <span class="s">'./server.js'</span>;\n\n<span class="k">export function</span> greet(id) {\n  <span class="k">return</span> <span class="s">'Hello '</span> + getUser(id).<span class="hl">name</span>;   <span class="c">// line 4</span>\n}`;
+  const file = (name, code, badge = "") => `<div class="file"><div class="name"><span>${name}</span>${badge}</div><pre>${code}</pre></div>`;
+  const term = (t) => `<div class="term">${t}</div>`;
+  const shared = [
+    { title: "One small project", text: `<p>An API returns a user. A greeting screen reads the user's <code>name</code>. A test checks the greeting.</p><p>The interface between them is a contract, <code>user-api</code>, that people agreed on.</p>`,
+      panel: () => file("src/server.js", server0) + file("src/ui.js", ui0) + term(`<span class="dim">$ node --test</span>\n<span class="pass">ok 1 - greets the user by name</span>`) },
+    { title: "Two tasks, two agents", text: `<p><b>T-api</b>: rename <code>name</code> to <code>fullName</code> in the API, as the accepted contract now says.</p><p><b>T-ui</b>: a friendlier footer on the greeting screen, in <code>src/ui.js</code>, a different file from the API.</p><p>Each task goes to its own AI agent.</p>`,
+      panel: () => term(`<span class="badge">T-api</span>  src/server.js, src/server.test.js\n<span class="badge">T-ui</span>   src/ui.js, src/footer.test.js\n\n<span class="dim">Different files. Git will see no conflict.</span>`) },
+    { title: "Each agent: green", text: `<p>Both agents finish. Each runs its own checks, and each passes.</p><p>By every signal a developer normally looks at, both changes are good.</p>`,
+      panel: () => file("src/server.js", server1, `<span class="badge pass">T-api ✓</span>`) + term(`<span class="dim">T-api $ node --test src/server.test.js</span>\n<span class="pass">pass</span>\n<span class="dim">T-ui  $ node --test src/ui.test.js src/footer.test.js</span>\n<span class="pass">pass</span>`) },
+  ];
+  const flows = {
+    without: [...shared,
+      { title: "Merged cleanly", text: `<p>The two changes touch different files, so Git merges them with no conflict.</p><p>Nothing looks wrong yet.</p>`,
+        panel: () => term(`<span class="dim">$ git apply T-api.patch</span>\n<span class="dim">$ git apply T-ui.patch</span>\n<span class="pass">applied cleanly, no conflict</span>`) },
+      { title: "The project is broken", text: `<p>Run the project's tests after the merge: the greeting now reads a field that no longer exists.</p><p><b>Both tasks were green, the merge was clean, and the shared project is broken.</b> It is found only after it shipped. With real agents, this happened in 6 of 6 trials.</p>`,
+        panel: () => file("src/ui.js (merged)", ui0, `<span class="badge fail">reads .name</span>`) + term(`<span class="dim">$ node --test</span>\n<span class="fail">not ok - greets the user by name</span>\n  expected 'Hello Ada'\n  actual   'Hello undefined'`) },
+    ],
+    with: [...shared,
+      { title: "Relay sees they are coupled", text: `<p>Both tasks depend on the same contract, <code>user-api</code>. Relay will not apply either one on its own: they must be <b>checked together</b>.</p><p>Agents cannot approve or apply anything. Only people can.</p>`,
+        panel: () => term(`<span class="badge relay">Relay</span> T-api ⇄ T-ui share contract user-api\n<span class="dim">Apply T-api alone →</span> <span class="warn">refused: check together first</span>`) },
+      { title: "Check Together: a rehearsal", text: `<p>Relay builds a separate copy of the project as it is now, adds both changes, and runs the checks itself. Evidence an agent reports does not count.</p><p>The combined test fails, so the rehearsal is <b>blocked</b>. The real project is untouched.</p>`,
+        panel: () => term(`<span class="badge relay">Relay</span> rehearsal on a combined copy (455 ms)\n<span class="dim">node --check src/server.js</span>   <span class="pass">pass</span>\n<span class="dim">node --test</span>                   <span class="fail">FAIL</span>\n  <span class="fail">not ok - greets the user by name</span>\n\n<span class="fail">BLOCKED</span>  shared project: <span class="pass">unchanged</span>`) },
+      { title: "Relay explains why", text: `<p>Relay traces the failure to its cause and labels how sure it is: <b>confirmed</b>, <b>likely</b>, or <b>unknown</b>. It never guesses.</p><p>Here it is confirmed: T-api changed <code>getUser</code> so it no longer returns <code>name</code>, and T-ui still reads it at <code>src/ui.js:4</code>. With real agents, the explanation was accurate in 3 of 3 trials.</p>`,
+        panel: () => term(`<span class="badge relay">Relay</span> Verdict: <span class="pass">confirmed</span>`) + `<div class="file"><ul class="ev">
+<li>getUser returns {id, name} → {id, fullName} (changed by T-api)</li>
+<li>src/ui.js imports getUser from ./server.js</li>
+<li>src/ui.js:4 reads .name, which getUser() no longer returns</li>
+<li>node --test: "greets the user by name" fails on the combined copy</li>
+<li>contract user-api v1 defines getUser → { id, fullName }</li></ul></div>` },
+      { title: "A person decides", text: `<p class="count">How it ends (illustration)</p><p>Relay does not pick a side. The task owners decide: move the screen to <code>fullName</code>, or keep <code>name</code> in the API. Then they check together again.</p><p>Only when the combined check passes, nothing has moved since, and a person approves, does Relay apply. <b>No break reached the project in 6 of 6 trials.</b></p>`,
+        panel: () => term(`<span class="dim">T-ui updated: getUser(id).fullName</span>\n<span class="badge relay">Relay</span> rehearsal again\n<span class="dim">node --test</span>   <span class="pass">pass</span>\n\n<span class="pass">PASSED</span>  waiting for a person to approve\n<span class="dim">approved → applied to the shared project</span>`) },
+    ],
+  };
+  let mode = "without", i = 0;
+  const $ = (id) => document.getElementById(id);
+  function render() {
+    const f = flows[mode], s = f[i];
+    $("count").textContent = `${mode === "with" ? "With Relay" : "Without Relay"} · step ${i + 1} of ${f.length}`;
+    $("story").innerHTML = `<h2>${s.title}</h2>${s.text}`;
+    $("panel").innerHTML = s.panel();
+    $("prev").disabled = i === 0;
+    $("next").textContent = i === f.length - 1 ? (mode === "without" ? "Now with Relay →" : "Start over") : "Next";
+    $("dots").innerHTML = f.map((_, k) => `<span class="${k <= i ? "on" : ""}"></span>`).join("");
+    document.querySelectorAll(".modes button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.mode === mode)));
+  }
+  function setMode(m, keep) { mode = m; i = keep ? Math.min(i, flows[m].length - 1) : 0; render(); }
+  $("prev").addEventListener("click", () => { if (i > 0) { i--; render(); } });
+  $("next").addEventListener("click", () => {
+    if (i < flows[mode].length - 1) { i++; render(); }
+    else if (mode === "without") { setMode("with", true); i = Math.min(3, flows.with.length - 1); render(); }
+    else { setMode("without"); }
+  });
+  document.querySelectorAll(".modes button").forEach((b) => b.addEventListener("click", () => setMode(b.dataset.mode, true)));
+  document.addEventListener("keydown", (e) => {
+    if (e.target.closest && e.target.closest("input, textarea")) return;
+    if (e.key === "ArrowRight") $("next").click();
+    if (e.key === "ArrowLeft") $("prev").click();
+  });
+  render();
+})();
+</script>
+</body>
+</html>

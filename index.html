@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Recast and Relay</title>
+<meta name="description" content="Two products on one idea: nothing important should move between apps or into a codebase without being seen, approved and checked. Recast for people's everyday context; Relay for teams of developers and coding agents.">
+<link rel="icon" href="assets/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400&display=swap">
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<header class="bar"><div class="wrap">
+  <a class="brand" href="./"><span class="dot" aria-hidden="true"></span>Recast &amp; Relay</a>
+  <nav class="nav" aria-label="Main">
+    <a href="recast/">Recast</a><a href="recast/demo/">Try Recast</a><a href="relay/">Relay</a><a href="relay/walkthrough.html">Relay walkthrough</a><a href="https://github.com/shishirbhat/recast-and-relay/blob/main/docs/how-it-works.md">How it works</a><a href="https://github.com/shishirbhat/recast-and-relay/blob/main/docs/api.md">API</a>
+  </nav>
+</div></header>
+
+<main>
+<section class="hero"><div class="wrap">
+  <span class="eyebrow">Two products, one principle</span>
+  <h1>Nothing important moves without being <em>seen</em>, <em>approved</em> and <em>checked</em>.</h1>
+  <p class="lede">Software now acts for us: moving our plans between apps, and writing code alongside us. Both are fast, and both quietly get things wrong. Recast and Relay put a person in the loop at the moment that matters, and then check the result against reality.</p>
+</div></section>
+
+<section><div class="wrap">
+  <div class="grid two">
+    <article class="card product">
+      <span class="tag clay">For everyone</span>
+      <h2>Recast</h2>
+      <p><b>The context layer between your apps.</b> Select what matters on any page: a person, a time, a place, a message. Press the pieces together into one object, see exactly what will happen, place it in Google Calendar, Gmail, Tasks, Docs, GitHub or Linear, and Recast reads it back to prove it landed.</p>
+      <ul>
+        <li>Conflicting information shows where each value came from</li>
+        <li>Nothing is written until you approve; everything can be undone</li>
+        <li>Save what you did as a personal workflow and run it again</li>
+      </ul>
+      <div class="actions"><a class="btn clay" href="recast/demo/">Try the demo</a><a class="btn" href="recast/">How Recast works</a></div>
+    </article>
+    <article class="card product">
+      <span class="tag relay">For software teams</span>
+      <h2>Relay</h2>
+      <p><b>The integration trust layer for people and coding agents.</b> Two changes can each pass their own tests and still break the project together. Relay rehearses them together before anything is applied, blocks the break, and explains the cause.</p>
+      <ul>
+        <li>Works with real agents (Claude Code) and any editor</li>
+        <li>Only evidence Relay gathered itself counts; agents cannot approve</li>
+        <li>Live shared editing, presence and line history in a browser IDE and VS Code</li>
+      </ul>
+      <div class="actions"><a class="btn relay" href="relay/walkthrough.html">Walk through it</a><a class="btn" href="relay/">How Relay works</a></div>
+    </article>
+  </div>
+</div></section>
+
+<section><div class="wrap">
+  <h2>Where things stand</h2>
+  <p class="lede">We say exactly what has been proven and how. Everything below is built and tested; the column on the right says against what.</p>
+  <div class="table"><table>
+    <thead><tr><th>Capability</th><th>Status</th><th>Proven against</th></tr></thead>
+    <tbody>
+      <tr><td>Recast: capture, compose, review, place, read back, undo</td><td class="yes">Built</td><td>Real Google Calendar for event creation (a test account, by hand); the other apps against stand-ins of their APIs</td></tr>
+      <tr><td>Recast: Chrome extension, desktop app (Mac, Windows, Linux)</td><td class="yes">Built</td><td>Automated tests in real Chromium and Electron on Linux; Mac and Windows builds made by CI</td></tr>
+      <tr><td>Recast: developer API, SDK and MCP server for AI agents</td><td class="yes">Built</td><td>Automated tests over real HTTP; not yet hosted publicly</td></tr>
+      <tr><td>Relay: blocks combined breaks before they reach the project</td><td class="yes">Built</td><td>Real Claude Code agents, 6 of 6 trials; the cause was explained correctly in 3 of 3 trials that recorded it</td></tr>
+      <tr><td>Relay: browser IDE and VS Code extension</td><td class="yes">Built</td><td>Automated tests with real editors and browsers</td></tr>
+      <tr><td>Use by independent people</td><td class="part">Next</td><td>No outside users yet. That is the next milestone.</td></tr>
+    </tbody>
+  </table></div>
+</div></section>
+
+<section><div class="wrap narrow">
+  <h2>Look around</h2>
+  <ul>
+    <li><a href="recast/demo/">Try Recast</a>: a playable demo in your browser. No sign-in; nothing leaves the page.</li>
+    <li><a href="relay/walkthrough.html">Relay walkthrough</a>: the real experiment, step by step, with and without Relay.</li>
+    <li><a href="https://github.com/shishirbhat/recast-and-relay/blob/main/docs/how-it-works.md">How it works</a>: the ideas behind both products, in plain language.</li>
+    <li><a href="https://github.com/shishirbhat/recast-and-relay/blob/main/docs/api.md">API</a>: what developers and AI agents can call.</li>
+  </ul>
+  <p class="note">This repository is a showcase. The product source code is private. The demo runs entirely in your browser with stand-ins for Google and other apps, and says so on every screen.</p>
+</div></section>
+</main>
+
+<footer><div class="wrap"><span>© 2026 Shishir Bhat. All rights reserved.</span><span><a href="https://github.com/shishirbhat/recast-and-relay">Repository</a> · <a href="https://github.com/shishirbhat">@shishirbhat</a></span></div></footer>
+</body>
+</html>

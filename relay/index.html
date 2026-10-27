@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Relay</title>
+<meta name="description" content="Relay is the integration trust layer for human and AI developers: it rehearses changes together before anything is applied, blocks combined breaks, and explains the cause.">
+<link rel="icon" href="../assets/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400&display=swap">
+<link rel="stylesheet" href="../assets/site.css">
+</head>
+<body>
+<header class="bar"><div class="wrap">
+  <a class="brand" href="../"><span class="dot" aria-hidden="true"></span>Recast &amp; Relay</a>
+  <nav class="nav" aria-label="Main">
+    <a href="../recast/">Recast</a><a href="../recast/demo/">Try Recast</a><a href="./" aria-current="page">Relay</a><a href="walkthrough.html">Relay walkthrough</a><a href="https://github.com/shishirbhat/recast-and-relay/blob/main/docs/how-it-works.md">How it works</a><a href="https://github.com/shishirbhat/recast-and-relay/blob/main/docs/api.md">API</a>
+  </nav>
+</div></header>
+
+<main>
+<section class="hero"><div class="wrap">
+  <span class="eyebrow relay">Relay</span>
+  <h1>Every change must <em>earn</em> its way in.</h1>
+  <p class="lede">Teams now ship code written by several people and several AI agents at once. Each change passes its own tests, Git merges them cleanly, and the project still breaks. Relay rehearses the changes together before anything is applied, blocks the break, and says why.</p>
+  <div class="actions"><a class="btn relay" href="walkthrough.html">Walk through the experiment</a><a class="btn" href="https://github.com/shishirbhat/recast-and-relay/blob/main/docs/how-it-works.md#relay">How it works</a></div>
+</div></section>
+
+<section><div class="wrap">
+  <h2>The problem, in one example</h2>
+  <div class="grid">
+    <div class="card"><h3>Agent A</h3><p>Renames a field in the API: <code>name</code> becomes <code>fullName</code>. Its tests pass.</p></div>
+    <div class="card"><h3>Agent B</h3><p>Edits the greeting screen in a different file. It still reads <code>name</code>. Its tests pass.</p></div>
+    <div class="card"><h3>Together</h3><p>Different files, so Git sees no conflict. Merged, the project's tests fail. <b>The break is found after it shipped.</b></p></div>
+  </div>
+  <p style="margin-top:20px">With real Claude Code agents, this happened in <b>6 of 6 trials</b>. Without Relay, the break was merged every time. With Relay, it was blocked every time and the project stayed unchanged. <a href="walkthrough.html">See it step by step.</a></p>
+</div></section>
+
+<section><div class="wrap">
+  <h2>How Relay works</h2>
+  <ol class="steps relay">
+    <li><b>Tasks and contracts</b><span>Work is split into tasks with a scope. Shared interfaces are versioned contracts that only people accept.</span></li>
+    <li><b>Guarded agents</b><span>Each agent works in its own copy of the project. A hook stops edits outside its scope and fails closed.</span></li>
+    <li><b>Relay's own evidence</b><span>Relay runs the checks itself. What an agent says it tested does not count.</span></li>
+    <li><b>Check Together</b><span>Tasks that share a contract are rehearsed combined, on the project as it is now.</span></li>
+    <li><b>Explain</b><span>A blocked rehearsal names the change, the line that still depends on it, and the failing test. Or says "likely" or "unknown" instead of guessing.</span></li>
+    <li><b>A person approves</b><span>Only a person applies. Relay checks nothing moved since the rehearsal.</span></li>
+  </ol>
+</div></section>
+
+<section><div class="wrap">
+  <div class="feature">
+    <div><span class="eyebrow">Coordination</span><h2>What needs you, at a glance</h2><p>What's running, what's blocking other work, who is touching related code, and what is safe to integrate next. All of it computed from Relay's engine, not from what agents report.</p></div>
+    <figure><img class="shot" src="../assets/img/relay-coordination.png" alt="Relay's Coordination view: two tasks that share a contract and must integrate together, one awaiting approval, one running, one queued." loading="lazy"></figure>
+  </div>
+  <div class="feature flip">
+    <div><span class="eyebrow">Refused when it matters</span><h2>Nothing applied until it passes</h2><p>When the project moved on since an agent started, Relay merges the change with the project as it is now and checks again. If that fails, nothing is applied, and you are told why.</p></div>
+    <figure><img class="shot" src="../assets/img/relay-apply-refused.png" alt="A Relay notice: the project changed since the agent's snapshot, the merged check failed, and nothing was applied." loading="lazy"></figure>
+  </div>
+  <div class="feature">
+    <div><span class="eyebrow">Collaboration</span><h2>People and agents, in one workspace</h2><p>A browser IDE with the structure of VS Code: live shared editing, presence, and an agent panel where every request becomes a scoped task. Or stay in your own VS Code with Relay's extension.</p></div>
+    <figure><img class="shot" src="../assets/img/relay-workbench.png" alt="Relay's IDE: file explorer, an editor with another person's live caret, a terminal, and the Relay agent panel." loading="lazy"></figure>
+  </div>
+  <div class="feature flip">
+    <div><span class="eyebrow">History</span><h2>Who wrote any line</h2><p>Every line knows who wrote it, when, and with which edit: a person or an agent.</p></div>
+    <figure><img class="shot" src="../assets/img/relay-line-history.png" alt="Line history for line 4: already in the file, then edited by Maya, then by Bo, each with a 'Show change' link." loading="lazy"></figure>
+  </div>
+</div></section>
+
+<section><div class="wrap">
+  <h2>Where things stand</h2>
+  <div class="table"><table>
+    <thead><tr><th>Part</th><th>Status</th></tr></thead>
+    <tbody>
+      <tr><td>Coordination engine: tasks, contracts, conflict rules, Relay-run checks, completion gate</td><td class="yes">Built and tested</td></tr>
+      <tr><td>Claude Code integration (guard hook and tools for agents)</td><td class="yes">Tested with the real Claude Code</td></tr>
+      <tr><td>Check Together and its explanation</td><td class="yes">Tested with real agents: 6 of 6 breaks blocked; the explanation was correct in all 3 trials that recorded it</td></tr>
+      <tr><td>Browser IDE, VS Code extension, command line</td><td class="yes">Built and tested with real editors</td></tr>
+      <tr><td>Other agents (Codex, Cursor)</td><td class="part">Not yet</td></tr>
+      <tr><td>Use by independent teams</td><td class="part">Not yet: the next milestone</td></tr>
+    </tbody>
+  </table></div>
+  <p class="note relay" style="margin-top:20px">The trials used one designed scenario in a small project, with one agent product. They show that Relay catches and explains this kind of break when it happens, not yet how often it happens in real projects.</p>
+</div></section>
+</main>
+
+<footer><div class="wrap"><span>© 2026 Shishir Bhat. All rights reserved.</span><span><a href="https://github.com/shishirbhat/recast-and-relay">Repository</a> · <a href="https://github.com/shishirbhat">@shishirbhat</a></span></div></footer>
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Recast</title>
+<meta name="description" content="Recast is the context layer between your apps: select what matters, press it into one object, review it, place it, and see it read back.">
+<link rel="icon" href="../assets/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400&display=swap">
+<link rel="stylesheet" href="../assets/site.css">
+</head>
+<body>
+<header class="bar"><div class="wrap">
+  <a class="brand" href="../"><span class="dot" aria-hidden="true"></span>Recast &amp; Relay</a>
+  <nav class="nav" aria-label="Main">
+    <a href="./" aria-current="page">Recast</a><a href="demo/">Try Recast</a><a href="../relay/">Relay</a><a href="../relay/walkthrough.html">Relay walkthrough</a><a href="https://github.com/shishirbhat/recast-and-relay/blob/main/docs/how-it-works.md">How it works</a><a href="https://github.com/shishirbhat/recast-and-relay/blob/main/docs/api.md">API</a>
+  </nav>
+</div></header>
+
+<main>
+<section class="hero"><div class="wrap">
+  <span class="eyebrow clay">Recast</span>
+  <h1>Your context, <em>between</em> apps.</h1>
+  <p class="lede">Plans live in pieces: a time in a chat, a place on a website, a person in an email. Today you retype them, and mistakes slip through. Recast lets you select the pieces, press them into one object, see exactly what will happen, and place it. Then it checks the result.</p>
+  <div class="actions"><a class="btn clay" href="demo/">Try it in your browser</a><a class="btn" href="https://github.com/shishirbhat/recast-and-relay/blob/main/docs/api.md">For developers</a></div>
+</div></section>
+
+<section><div class="wrap">
+  <h2>Seven steps, every time</h2>
+  <ol class="steps">
+    <li><b>Capture</b><span>Select a time, a person, a place or a passage on any page or app.</span></li>
+    <li><b>Compose</b><span>Press pieces together. They become one object: an event, a message, a note, an issue.</span></li>
+    <li><b>Preview</b><span>See every field, where each came from, and what Recast assumed.</span></li>
+    <li><b>Approve</b><span>Nothing is written until you say so. Risky actions ask you to hold.</span></li>
+    <li><b>Execute</b><span>Placed in the app you chose, exactly once. A lost answer is checked, never resent.</span></li>
+    <li><b>Verify</b><span>Recast reads it back from the app and compares field by field.</span></li>
+    <li><b>Confirm</b><span>You see what actually happened, with a link to it, and Undo.</span></li>
+  </ol>
+</div></section>
+
+<section><div class="wrap">
+  <div class="feature">
+    <div><span class="eyebrow">Compose</span><h2>Three pages, one object</h2><p>Maya's name from her profile, the restaurant from its page, the free table from its booking widget. Pressed together, they become one event. You never retype anything.</p></div>
+    <figure><img class="shot" src="../assets/img/recast-02-composed.png" alt="The Recast module holding one object, 'Meet Maya at Dakshin', made from three pieces, with the button 'Choose where it goes' and two recipes." loading="lazy" width="1280" height="800"></figure>
+  </div>
+  <div class="feature flip">
+    <div><span class="eyebrow">Preview</span><h2>Every value names its source</h2><p>The review shows what goes where, where each value came from, and what Recast assumed (a default end time, your time zone). When two sources disagree, Recast shows both and lets you choose. It never picks silently.</p></div>
+    <figure><img class="shot" src="../assets/img/recast-04-review.png" alt="A calendar review listing title, notes, place and time, each labelled with its source, the assumptions Recast made, and a Confirm button." loading="lazy" width="1280" height="800"></figure>
+  </div>
+  <div class="feature">
+    <div><span class="eyebrow">Verify</span><h2>Read back, not assumed</h2><p>"Success" from an app's API is not proof. After placing, Recast reads the item back and compares it with what you approved: "5 of 5 fields match". If someone or something changed it, Recast shows exactly which field differs.</p></div>
+    <figure><img class="shot" src="../assets/img/recast-05-readback.png" alt="The receipt 'Added to Calendar' with the line 'Read back from Calendar: 5 of 5 fields match', Undo and Done." loading="lazy" width="1280" height="800"></figure>
+  </div>
+  <div class="feature flip">
+    <div><span class="eyebrow">Repeat</span><h2>Your own workflows</h2><p>Did something useful? Save it under a name. Next time, run it on new information: same review, same approval, same checks. Only the steps are kept, never what you captured.</p></div>
+    <figure><img class="shot" src="../assets/img/recast-06-saved.png" alt="The receipt after saving it as a workflow named 'Dinner plan'." loading="lazy" width="1280" height="800"></figure>
+  </div>
+</div></section>
+
+<section><div class="wrap">
+  <h2>Where Recast works</h2>
+  <div class="grid">
+    <div class="card"><h3>Chrome extension</h3><p>Carry an object across tabs and drop it into a calendar or a draft. Your data stays in the browser session.</p></div>
+    <div class="card"><h3>Desktop app</h3><p>On top of any app on Mac, Windows and Linux: select, tap Control twice, and the selection becomes an object right there.</p></div>
+    <div class="card"><h3>API, SDK and MCP</h3><p>Developers and AI agents turn raw text into typed objects and place them under the same consent and trust rules. <a href="https://github.com/shishirbhat/recast-and-relay/blob/main/docs/api.md">API docs</a>.</p></div>
+  </div>
+  <h3 style="margin-top:32px">Apps it places in</h3>
+  <p>Google Calendar, Outlook Calendar, Gmail drafts, Google Tasks, Google Docs, GitHub issues, Linear issues, Google Maps and Apple Maps (open with directions). Every connector declares what it can do (create, read back, undo) and Recast only offers what it can keep.</p>
+</div></section>
+
+<section><div class="wrap narrow">
+  <h2>What the demo is, and isn't</h2>
+  <p>The demo is the real Recast interface and engine, running entirely in your browser. The calendar, mail, docs and issue tracker in it are local stand-ins, and every review says so. Nothing you do there leaves the page.</p>
+  <p class="note">One capability has been run against a real provider: creating, deduplicating and undoing a Google Calendar event, done by hand on a test account. The other connectors are tested against stand-ins of their APIs. No outside users yet; that is the next milestone.</p>
+  <div class="actions"><a class="btn clay" href="demo/">Open the demo</a></div>
+  <p style="margin-top:24px;color:var(--muted);font-size:14px">In the demo: turn Recast on (the button at the top right, or press Control twice), drag Maya Rao onto the Dakshin tab and drop her on the restaurant's name, then drag the "Friday, 7:30 PM" table onto the object. Choose where it goes, review, confirm.</p>
+</div></section>
+</main>
+
+<footer><div class="wrap"><span>© 2026 Shishir Bhat. All rights reserved.</span><span><a href="https://github.com/shishirbhat/recast-and-relay">Repository</a> · <a href="https://github.com/shishirbhat">@shishirbhat</a></span></div></footer>
+</body>
+</html>
